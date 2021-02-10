@@ -1,0 +1,17 @@
+/*
+styles.css
+blockball (c) 2021
+All Rights Reserved
+*/
+
+html, body{
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+}
+
+canvas#game{
+	background-color: #000;
+	width: 100vw;
+	height: 100vh;
+}
