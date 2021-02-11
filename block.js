@@ -6,8 +6,9 @@ class Block {
 
         this.hit = function () {
             this.health--;
-            if (this.health < 1)
+            if (this.health < 1) {
                 this.health = 0;
+            }
         };
 
         this.render = function () {
@@ -18,8 +19,7 @@ class Block {
             ctx.fillRect(this.x, this.y, BlockParam.width, BlockParam.height);
             ctx.fillStyle = '#000';
             ctx.font = 'bold 20px sans-serif';
-            ctx.fillText(health.toString(), this.x + 10, this.y + 30);
-
+            ctx.fillText(this.health.toString(), this.x + 10, this.y + 30);
 
         };
     }

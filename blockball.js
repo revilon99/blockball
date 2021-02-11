@@ -64,13 +64,20 @@ function tick(){
 		crosshair.y = mouse.y;
 	}
 	
-	for(var block of blocks) {
-		if(block.health < 1){
-			blocks.pop(block);
+	for (let ball of balls) {
+		ball.tick(delta/1000);
+		for(let block of blocks) {
+			if(ball.x >= block.x && ball.x <= (block.x + BlockParam.width)){
+				if(ball.y >= block.y && ball.y <= (block.y + BlockParam.height)){
+					block.hit();
+					if(block.health < 1){
+						let index = blocks.indexOf(block);
+						blocks.splice(index, 1);
+					}
+				}
+			}
 		}
 	}
-	for(var ball of balls) ball.tick(delta/1000);
-	
 	render();
 }
 
