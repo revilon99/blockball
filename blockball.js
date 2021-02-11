@@ -22,7 +22,7 @@ var crosshair = new Vec();
 
 var BallParam = {
 	initVel: 300,
-	rad: 4,
+	rad: 8,
 	num: 30,
 	spawnTime: 100
 }
@@ -64,8 +64,13 @@ function tick(){
 		crosshair.y = mouse.y;
 	}
 	
+	for(var block of blocks) {
+		if(block.health < 1){
+			blocks.pop(block);
+		}
+	}
 	for(var ball of balls) ball.tick(delta/1000);
-		
+	
 	render();
 }
 
@@ -120,25 +125,6 @@ var Ball = function(){
 		ctx.fillStyle = '#fff';
 		ctx.fill();
 		ctx.closePath();
-	}
-}
-
-var Block = function(x, y, health){
-	this.x = x;
-	this.y = y;
-	this.health = health;
-	
-	this.hit = function(){
-		this.health--;
-		if(this.health < 1) null; //do something
-	}
-	
-	this.render = function(){
-		ctx.fillStyle = getColor(this.health/BlockParam.maxHealth);
-		if(this == blocks[0]){
-			null;
-		}
-		ctx.fillRect(this.x, this.y, BlockParam.width, BlockParam.height);
 	}
 }
 
