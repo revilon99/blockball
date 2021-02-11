@@ -6,9 +6,7 @@ class Block {
 
         this.hit = function () {
             this.health--;
-            if (this.health < 1) {
-                this.health = 0;
-            }
+            if (this.health < 1) removeBlock(this);
         };
 
         this.render = function () {
