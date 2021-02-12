@@ -12,7 +12,7 @@ class Block {
         this.render = function () {
             ctx.fillStyle = getColor(this.health / BlockParam.maxHealth);
             if (this == blocks[0]) {
-                null;
+                null; //for debugging
             }
             ctx.fillRect(this.x, this.y, BlockParam.width, BlockParam.height);
             ctx.fillStyle = '#000';

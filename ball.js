@@ -14,13 +14,13 @@ class Ball{
 		this.vel.scale(MAX_SPEED);
 		this.radius = BallParam.rad;
 		this.velR = 0; //dw about this
-		
+
 		this.earliestCollisionResponse = new Collision();
-		
+
 		this.temp = new Collision();
 		this.me = new Collision();
 		this.other = new Collision();
-		
+
 		this.tick = function(time){
 			if(this.vel.x >  MAX_SPEED) this.vel.x =  MAX_SPEED;
 			if(this.vel.x < -MAX_SPEED) this.vel.x = -MAX_SPEED;
@@ -39,7 +39,7 @@ class Ball{
 
 			this.earliestCollisionResponse.reset();
 		}
-		
+
 		this.render = function(){
 			ctx.beginPath();
 			ctx.arc(this.x, this.y, BallParam.rad, 0, 2*Math.PI, false);
@@ -47,7 +47,7 @@ class Ball{
 			ctx.fill();
 			ctx.closePath();
 		}
-		
+
 		this.borderIntersect = function(timeLimit){
 			CollisionPhysics.pointIntersectsRectangleOuter(
 				this,
@@ -55,9 +55,9 @@ class Ball{
 				timeLimit, this.temp);
 			if(this.temp.t < this.earliestCollisionResponse.t) this.earliestCollisionResponse.copy(this.temp);
 		}
-		
+
 		this.blockIntersect = function(block, timeLimit){
-			CollisionPhysics.pointIntersectsCube(this, block, timeLimit, this.temp);
+			CollisionPhysics.pointIntersectsCube(this, block, timeLimit, this.temp, 3, this.other);
 			if(this.temp.t < this.earliestCollisionResponse.t) this.earliestCollisionResponse.copy(this.temp);
 		}
 	}

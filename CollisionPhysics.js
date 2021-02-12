@@ -121,24 +121,47 @@ var CollisionPhysics = new (function(){
         }
 	}
 
-	this.pointIntersectsCube = function(A, cube, timeLimit, response, fillet = 0){
+	this.pointIntersectsCube = function(A, cube, timeLimit, response, fillet = 0, bResponse){
 		response.reset();
 
 		//Right of Cube
-		this.pointIntersectsLineVerticalSegment(A, cube.x + BlockParam.width, cube.y, cube.y + BlockParam.height, timeLimit, this.temp, 'right');
+		this.pointIntersectsLineVerticalSegment(A, cube.x + BlockParam.width - fillet, cube.y + fillet, cube.y + BlockParam.height - fillet, timeLimit, this.temp, 'right');
 		if(this.temp.t < response.t) response.copy(this.temp);
 
 		//Left of Cube
-		this.pointIntersectsLineVerticalSegment(A, cube.x, cube.y, cube.y + BlockParam.height, timeLimit, this.temp, 'left');
+		this.pointIntersectsLineVerticalSegment(A, cube.x + fillet, cube.y + fillet, cube.y + BlockParam.height - fillet, timeLimit, this.temp, 'left');
 		if(this.temp.t < response.t) response.copy(this.temp);
 
 		//Top of Cube
-		this.pointIntersectsLineHorizontalSegment(A, cube.y, cube.x, cube.x + BlockParam.width, timeLimit, this.temp, 'top');
+		this.pointIntersectsLineHorizontalSegment(A, cube.y + fillet, cube.x + fillet, cube.x + BlockParam.width - fillet, timeLimit, this.temp, 'top');
 		if(this.temp.t < response.t) response.copy(this.temp);
 
 		//Bottom Border
-		this.pointIntersectsLineHorizontalSegment(A, cube.y + BlockParam.height, cube.x, cube.x + BlockParam.width, timeLimit, this.temp, 'bottom');
+		this.pointIntersectsLineHorizontalSegment(A, cube.y + BlockParam.height - fillet, cube.x + fillet, cube.x + BlockParam.width - fillet, timeLimit, this.temp, 'bottom');
 		if(this.temp.t < response.t) response.copy(this.temp);
+
+		if(fillet > 0){
+			let tempBall = {x: cube.x + fillet, y: cube.y + fillet, radius: fillet, vel: {x: 0, y: 0}, velR: 0, mass: 1000000}
+
+			//Top Left
+			this.pointIntersectsMovingPoint(A, tempBall, timeLimit, this.temp, bResponse);
+			if(this.temp.t < response.t) response.copy(this.temp);
+
+			//Top Right
+			tempBall.x = cube.x + BlockParam.width - fillet;
+			this.pointIntersectsMovingPoint(A, tempBall, timeLimit, this.temp, bResponse);
+			if(this.temp.t < response.t) response.copy(this.temp);
+
+			//Bottom Right
+			tempBall.y = cube.y + BlockParam.height - fillet;
+			this.pointIntersectsMovingPoint(A, tempBall, timeLimit, this.temp, bResponse);
+			if(this.temp.t < response.t) response.copy(this.temp);
+
+			//Bottom Left
+			tempBall.x = cube.x + fillet;
+			this.pointIntersectsMovingPoint(A, tempBall, timeLimit, this.temp, bResponse);
+			if(this.temp.t < response.t) response.copy(this.temp);
+		}
 	}
 
 	this.pointIntersectsLineVerticalSegment = function(A, x, y1, y2, timeLimit, response, side){
@@ -264,9 +287,9 @@ var CollisionPhysics = new (function(){
             return;
         }
 
-		//Assume that mass is proportional to the cube of the radius
-        let aMass = A.radius * A.radius * A.radius;
-        let bMass = B.radius * B.radius * B.radius;
+		//Assume that mass is proportional to the cube of the radius if no mass defined
+        let aMass = A.mass||(A.radius * A.radius * A.radius);
+        let bMass = B.mass||(B.radius * B.radius * B.radius);
         let diffMass = aMass - bMass;
         let sumMass = aMass + bMass;
 

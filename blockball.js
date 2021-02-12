@@ -15,14 +15,13 @@ const EPSILON_TIME = 0.0001;
 var shooter = {
 	size: 25,
 	color: '#00ff00',
-	crosshairRad: 5,
+	crosshairRad: 3,
 	crosshairDist: 200
 }
 
 var crosshair = new Vec();
 
 var BallParam = {
-	initVel: 300,
 	rad: 8,
 	num: 60,
 	spawnTime: 100
@@ -39,7 +38,7 @@ function init(){
 	//init shooter
 	shooter.x = canvas.clientWidth / 2;
 	shooter.y = canvas.clientHeight / 10;
-	
+
 	//init blocks
 	var numColumns = Math.ceil(canvas.clientWidth / (BlockParam.width + BlockParam.offset));
 	BlockParam.width = canvas.clientWidth / numColumns - BlockParam.offset;
@@ -50,17 +49,17 @@ function init(){
 function tick(){
 	requestAnimationFrame(tick);
 	let timeLeft = 1;
-	
+
 	if(running) {do{
 		var tMin = timeLeft;
-		
+
 		//Ball-Wall Collision
         for(let b of balls){
             b.borderIntersect(timeLeft);
             if(b.earliestCollisionResponse.t < tMin)
                 tMin = b.earliestCollisionResponse.t;
         }
-		
+
 		var hitBlock = null;
 		//Ball-Block Collision
 		for(let b of balls){
@@ -73,12 +72,12 @@ function tick(){
 				}
 			}
 		}
-		
+
 		for(let ball of balls) ball.tick(tMin);
 		if(hitBlock != null) hitBlock.hit();
 		timeLeft -= tMin;
 	}while(timeLeft > EPSILON_TIME);}
-		
+
 	var crosshairDiff = Vec2D.sub(mouse, shooter);
 	if(crosshairDiff.mag() > shooter.crosshairDist*shooter.crosshairDist){
 		crosshairDiff.normalize();
@@ -93,18 +92,19 @@ function tick(){
 
 function render(){
 	ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-	
+
 	//render shooter
 	ctx.fillStyle = shooter.color;
 	ctx.fillRect(shooter.x - shooter.size/2, shooter.y - shooter.size/2, shooter.size, shooter.size);
-	
+
 	//render crosshair
 	ctx.beginPath();
 	ctx.arc(crosshair.x, crosshair.y, shooter.crosshairRad, 0, 2*Math.PI, false);
-	ctx.fillStyle = '#fff';
+	ctx.fillStyle = '#ff0000';
 	ctx.fill();
 	ctx.closePath();
-	
+
+	//render objects
 	for(var block of blocks) block.render();
 	for(var ball of balls) ball.render();
 	board.render();
