@@ -69,6 +69,7 @@ function tick(){
 				if(b.earliestCollisionResponse.t < tMin){
 					tMin = b.earliestCollisionResponse.t;
 					hitBlock = block;
+					board.addPoint();
 				}
 			}
 		}
@@ -86,22 +87,6 @@ function tick(){
 	}else{
 		crosshair.x = mouse.x;
 		crosshair.y = mouse.y;
-	}
-	
-	for (let ball of balls) {
-		ball.tick(delta/1000);
-		for(let block of blocks) {
-			if(ball.x >= block.x && ball.x <= (block.x + BlockParam.width)){
-				if(ball.y >= block.y && ball.y <= (block.y + BlockParam.height)){
-					block.hit();
-					board.addPoint();
-					if(block.health < 1){
-						let index = blocks.indexOf(block);
-						blocks.splice(index, 1);
-					}
-				}
-			}
-		}
 	}
 	render();
 }
