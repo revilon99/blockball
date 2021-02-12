@@ -6,6 +6,7 @@ All Rights Reserved
 
 var balls  = [];
 var blocks = [];
+let board;
 
 var t = 0;
 var d = new Date();
@@ -70,6 +71,7 @@ function tick(){
 			if(ball.x >= block.x && ball.x <= (block.x + BlockParam.width)){
 				if(ball.y >= block.y && ball.y <= (block.y + BlockParam.height)){
 					block.hit();
+					board.addPoint();
 					if(block.health < 1){
 						let index = blocks.indexOf(block);
 						blocks.splice(index, 1);
@@ -97,6 +99,7 @@ function render(){
 	
 	for(var block of blocks) block.render();
 	for(var ball of balls) ball.render();
+	board.render();
 }
 
 function initBlocks(rows, columns){
@@ -105,6 +108,7 @@ function initBlocks(rows, columns){
 			blocks.push(new Block(BlockParam.offset + c*(BlockParam.width + BlockParam.offset), canvas.clientHeight - (BlockParam.offset + (r+1)*(BlockParam.height + BlockParam.offset)), BlockParam.maxHealth - 10*r));
 		}
 	}
+	board = new Scoreboard(10, 10, 50, 250, 0);
 }
 
 canvas.addEventListener('click', function(){
