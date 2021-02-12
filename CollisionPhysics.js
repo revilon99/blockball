@@ -6,34 +6,40 @@ All Rights Reserved
 
 const T_EPSILON = 0.00000005;
 
-var Collision = function(){
-    this.reset = function(){
-        this.t = Infinity;
-    }
+class Collision {
+	constructor() {
+		this.reset = function () {
+			this.t = Infinity;
+		};
 
-    this.copy = function(col){
-        this.t = col.t;
-        this.nVelX = col.nVelX;
-        this.nVelY = col.nVelY;
-    }
+		this.copy = function (col) {
+			this.t = col.t;
+			this.nVelX = col.nVelX;
+			this.nVelY = col.nVelY;
+		};
 
-    this.getNewX = function(curX, velX){
-        if(this.t > T_EPSILON) return curX + velX * (this.t - T_EPSILON);
-        else return curX;
-    }
-    this.getNewY = function(curY, velY){
-        if(this.t > T_EPSILON) return curY + velY * (this.t - T_EPSILON);
-        else return curY;
-    }
+		this.getNewX = function (curX, velX) {
+			if (this.t > T_EPSILON)
+				return curX + velX * (this.t - T_EPSILON);
+			else
+				return curX;
+		};
+		this.getNewY = function (curY, velY) {
+			if (this.t > T_EPSILON)
+				return curY + velY * (this.t - T_EPSILON);
+			else
+				return curY;
+		};
 
-    this.getImpactX = function(curX, speedX){
-        return curX + speedX * this.t;
-    }
-    this.getImpactY = function(curY, speedY){
-        return curY + speedY * this.t;
-    }
+		this.getImpactX = function (curX, speedX) {
+			return curX + speedX * this.t;
+		};
+		this.getImpactY = function (curY, speedY) {
+			return curY + speedY * this.t;
+		};
 
-    this.reset();
+		this.reset();
+	}
 }
 
 var CollisionPhysics = new (function(){
