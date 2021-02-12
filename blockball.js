@@ -8,9 +8,9 @@ var balls  = [];
 var blocks = [];
 let board;
 
-var t = 0;
-var d = new Date();
-var previousTime = d.getTime();
+let running = true;
+
+const EPSILON_TIME = 0.0001;
 
 var shooter = {
 	size: 25,
@@ -24,7 +24,7 @@ var crosshair = new Vec();
 var BallParam = {
 	initVel: 300,
 	rad: 8,
-	num: 30,
+	num: 60,
 	spawnTime: 100
 }
 
@@ -32,7 +32,7 @@ var BlockParam = {
 	width: 50,
 	height: 50,
 	offset: 5,
-	maxHealth: 100
+	maxHealth: 60
 }
 
 function init(){
@@ -49,11 +49,34 @@ function init(){
 
 function tick(){
 	requestAnimationFrame(tick);
-	d = new Date();
-	var newTime = d.getTime();
-	var delta = newTime - previousTime;
-	t += delta;
-	previousTime = newTime;
+	let timeLeft = 1;
+	
+	if(running) {do{
+		var tMin = timeLeft;
+		
+		//Ball-Wall Collision
+        for(let b of balls){
+            b.borderIntersect(timeLeft);
+            if(b.earliestCollisionResponse.t < tMin)
+                tMin = b.earliestCollisionResponse.t;
+        }
+		
+		var hitBlock = null;
+		//Ball-Block Collision
+		for(let b of balls){
+			for(let block of blocks){
+				b.blockIntersect(block, timeLeft);
+				if(b.earliestCollisionResponse.t < tMin){
+					tMin = b.earliestCollisionResponse.t;
+					hitBlock = block;
+				}
+			}
+		}
+		
+		for(let ball of balls) ball.tick(tMin);
+		if(hitBlock != null) hitBlock.hit();
+		timeLeft -= tMin;
+	}while(timeLeft > EPSILON_TIME);}
 		
 	var crosshairDiff = Vec2D.sub(mouse, shooter);
 	if(crosshairDiff.mag() > shooter.crosshairDist*shooter.crosshairDist){
@@ -111,6 +134,11 @@ function initBlocks(rows, columns){
 	board = new Scoreboard(10, 10, 50, 250, 0);
 }
 
+function removeBlock(block){
+	let index = blocks.indexOf(block);
+	blocks.splice(index, 1);
+}
+
 canvas.addEventListener('click', function(){
 	if(balls.length >= BallParam.num) return;
 	var spawnBall = setInterval(function(){
@@ -118,26 +146,6 @@ canvas.addEventListener('click', function(){
 		if(balls.length >= BallParam.num) clearInterval(spawnBall);
 	}, BallParam.spawnTime);
 }, false);
-
-var Ball = function(){
-	this.x = shooter.x;
-	this.y = shooter.y;
-	this.vel = Vec2D.sub(mouse, shooter);
-	this.vel.normalize()
-	this.vel.scale(BallParam.initVel);
-	
-	this.tick = function(delta){
-		this.x += this.vel.x*delta;
-		this.y += this.vel.y*delta;
-	}
-	this.render = function(){
-		ctx.beginPath();
-		ctx.arc(this.x, this.y, BallParam.rad, 0, 2*Math.PI, false);
-		ctx.fillStyle = '#fff';
-		ctx.fill();
-		ctx.closePath();
-	}
-}
 
 function getColor(num){
 	return rgb(2*num*255, 2*(1 - num)*255, 0);
