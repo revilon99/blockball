@@ -123,6 +123,9 @@ function removeBlock(block){
 	let index = blocks.indexOf(block);
 	blocks.splice(index, 1);
 }
+function randInt(low, high){
+	return Math.floor(Math.random() * (high+1)) + low;
+}
 
 canvas.addEventListener('click', function(){
 	if(balls.length >= BallParam.num) return;
