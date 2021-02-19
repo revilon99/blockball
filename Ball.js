@@ -1,5 +1,5 @@
 /*
-ball.js
+Ball.js
 blockball (c) 2021
 All Rights Reserved
 */

@@ -31,7 +31,8 @@ var BlockParam = {
 	width: 50,
 	height: 50,
 	offset: 5,
-	maxHealth: 60
+	maxHealth: 60,
+	targetNum: 80
 }
 
 function init(){
@@ -40,10 +41,11 @@ function init(){
 	shooter.y = canvas.clientHeight / 10;
 
 	//init blocks
+	BlockParam.width = canvas.clientWidth / 25;
 	var numColumns = Math.ceil(canvas.clientWidth / (BlockParam.width + BlockParam.offset));
 	BlockParam.width = canvas.clientWidth / numColumns - BlockParam.offset;
 	BlockParam.height = BlockParam.width;
-	initBlocks(4, numColumns);
+	initBlocks(Math.ceil(BlockParam.targetNum/numColumns), numColumns);
 }
 
 function tick(){
